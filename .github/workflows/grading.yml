@@ -20,5 +20,5 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
       - name: grading
-	run: |
-         sudo apt-get update
+        run: |
+          sudo apt-get update
