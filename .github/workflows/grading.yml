@@ -1,4 +1,4 @@
-name: Grading
+name: Automatic Casestudy Grading
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ permissions:
 
 jobs:
   release:
-    name: Build and Release
+    name: Start Auto Grading
     strategy:
       fail-fast: false
       matrix:
@@ -19,6 +19,21 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
-      - name: grading
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install Java
+        run: sudo apt-get install -y default-jdk
+      - name: Install Python Libraries
         run: |
-          sudo apt-get update
+          cd Python
+          pip install -r requirements.txt
+          python3 autograder.py
+      - name: Upload Grading Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: grading-reports-package
+          path: "*.xlsx"
+          retention-days: 90
