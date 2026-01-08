@@ -1,13 +1,24 @@
-name: Grading
+name: Release
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
-  run python:
+  release:
+    name: Build and Release
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: 
+          - ubuntu-latest
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+      - name: grading
 	run: |
-		python3
+		sudo apt-get update
