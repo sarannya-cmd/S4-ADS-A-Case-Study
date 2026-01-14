@@ -1,0 +1,46 @@
+{
+    "1": {
+        "topic": "AI-Driven Hiring & Resume Screening (Employment)",
+        "students": ["Parvathi", "Minha", "Niyathi", "Paulbin", "Antone"]
+    },
+    "2": {
+        "topic": "Facebook and cambridge scam 2018",
+        "students": ["Robinson", "Devadarsh", "James", "Jose", "Johan"]
+    },
+    "3": {
+        "topic": "data privacy in ai powered surveillance systems",
+        "students": ["Adith K", "Abel Mathew", "Aswin Asok KV", "Sanju Santy", "Sreerag NP", "Thomas Pd"]
+    },
+    "4": {
+        "topic": "Amazon AI Recruitment Tool - Bias and Ethics Issue",
+        "students": ["Ashith V", "Amarnath", "Muhammed Fahique", "Manav", "Sreedeep"]
+    },
+    "5": {
+        "topic": "Clearview AI Facial Recognition & Scraping People's Photos",
+        "students": ["Shanil VK", "Devika Sreejith", "Rasha", "Anamika Mukundan", "Abhiram KV"]
+    },
+    "6": {
+        "topic": "Aadhaar Data Privacy Issue",
+        "students": ["Anshwaramol p", "Roshnitha", "Anamika Vijayan", "Vismaya", "Rosmy Reji"]
+    },
+    "7": {
+        "topic": "Privacy and Data Security Issues in Cloud-Based Data Storage Systems",
+        "students": ["Anet", "Anna", "Akhila Saju", "sedna", "Thanmaya"]
+    },
+    "8": {
+        "topic": "Google Location Data Retention Issue",
+        "students": ["Felix", "Louis", "Richu", "Allen", "Nimay"]
+    },
+    "9": {
+        "topic": "Pegasus spyware and whatsapp privacy breach",
+        "students": ["Abinav", "Dhanush", "Arsha", "Pallavi Biju", "Manaswi"]
+    },
+    "10": {
+        "topic": "United arab emirates:etisalat customer data exposure under uae pdpl",
+        "students": ["Shebin", "Sabin", "Shaz", "Don", "Afreedh"]
+    },
+    "11": {
+        "topic": "UK: British Airways data breach and GDPR enforcement",
+        "students": ["Alex", "Adith", "Jithin", "Jishnu", "Saniya"]
+    }
+}

@@ -1,192 +1,118 @@
 import PyPDF2
+import docx
 import numpy as np
 import os
 import re
+import json
 import language_tool_python as llp
 from sklearn.feature_extraction.text import TfidfVectorizer
 import pandas as pd
 import math
 
-# Criteria & Weighting
-#
-# Sentence Uniformity:      6.0
-# Clear Purpose:            2.0
-# Organization:             1.5
-# Spelling and Grammar:     2.0
-# Tone and Word Choice:     1.5
-# Length, Pages, Alighment: 2.0
-# Total Marks:             15.0
-
-UNIFORMITY_WEIGHT =           6.0
-PURPOSE_WEIGHT =              4.0
+# set maximum points for each grading category
+UNIFORMITY_WEIGHT = 6.0
+PURPOSE_WEIGHT = 4.0
 SPELLING_AND_GRAMMAR_WEIGHT = 3.0
-LENGTH_PAGES_WEIGHT =         2.0
-
+LENGTH_PAGES_WEIGHT = 2.0
 
 def calculate_uniformity(content):
+    # measures how much sentence lengths vary for better reading flow
     sentences = re.split(r'[.?!]+', content)
-    sentences = [s.strip() for s in sentences if s.strip()]
-
-    if len(sentences) < 2:
-        return 0
-    
+    sentences = [s.strip() for s in sentences if len(s.split()) > 3]
+    if len(sentences) < 5: return 0
     lengths = [len(s.split()) for s in sentences]
-    standard_deviation = np.std(lengths)
-
-    target_variation = 10
-    difference = abs(standard_deviation - target_variation)
-
-    score = max(0, UNIFORMITY_WEIGHT - (difference * 0.1))
-    return score
+    std_dev = np.std(lengths)
+    target_std = 10
+    score = max(0, UNIFORMITY_WEIGHT - (abs(std_dev - target_std) * 0.3))
+    return round(score, 2)
 
 def calculate_purpose(content):
-    if not content.strip() or len(content.split()) < 5:
-        return 0.0
-
+    # uses tf-idf to find important keywords and check topic depth
+    if len(content.split()) < 50: return 0.0
     try:
-        vectorizer = TfidfVectorizer(stop_words='english')
+        vectorizer = TfidfVectorizer(stop_words='english', max_features=50)
         matrix = vectorizer.fit_transform([content])
-        weights = matrix.toarray().flatten()
-        
-        if weights.size == 0:
-            return 0.0
-
-        clarity = np.std(weights) * 500 
-        score = (clarity / 100) * PURPOSE_WEIGHT
-        return min(PURPOSE_WEIGHT, score)
-    except ValueError:
+        feature_names = vectorizer.get_feature_names_out()
+        vocabulary_score = (len(feature_names) / 50) * PURPOSE_WEIGHT
+        return round(min(PURPOSE_WEIGHT, vocabulary_score), 2)
+    except:
         return 0.0
 
-def calculate_grammar(content):
-
+def calculate_grammar(content, tool):
+    # calculates score based on number of errors per hundred words
     matches = tool.check(content)
     total_words = len(content.split())
-    
-    if total_words == 0:
-        return 0
+    if total_words == 0: return 0
+    error_rate = (len(matches) / total_words) * 100
+    score = max(0, SPELLING_AND_GRAMMAR_WEIGHT - (error_rate * 0.5))
+    return round(score, 2)
 
-    errors = len(matches)/total_words
-
-    # Prevent Division by zero
+def extract_text(file_path):
+    # extracts text content from pdf or docx files automatically
+    ext = os.path.splitext(file_path)[1].lower()
+    text = ""
     try:
-        grammar_and_spelling = max(0, (1 - errors) * SPELLING_AND_GRAMMAR_WEIGHT)
-    except ZeroDivisionError:
-        grammar_and_spelling = 0
-    
-    return grammar_and_spelling
-    
+        if ext == ".pdf":
+            reader = PyPDF2.PdfReader(file_path)
+            pages = reader.pages[1:-1] if len(reader.pages) > 2 else reader.pages
+            text = "\n".join([p.extract_text() for p in pages if p.extract_text()])
+        elif ext == ".docx":
+            doc = docx.Document(file_path)
+            text = "\n".join([para.text for para in doc.paragraphs])
+    except Exception as e:
+        print(f"error reading {file_path}: {e}")
+    return text
 
-def calculate_pages_alignment(reader, target_pages=5):
-    # get the number of pages found in the pdf
-    num_pages = len(reader.pages)
-    
-    line_indents = []
+# load group data from the external json file
+json_path = 'groups.json' 
+with open(json_path, 'r') as f:
+    group_data = json.load(f)
 
-    # get the various indent values for the pdf
-    # Skipping first 2 and last page to check alignment only on body text
-    body_pages = reader.pages[2:-1] if num_pages > 3 else reader.pages
-    
-    for page in body_pages:
-        text = page.extract_text()
-        if text:
-            for line in text.split('\n'):
-                if line.strip():
-                    line_indents.append(len(line) - len(line.lstrip()))
-    
-    alignment_max = LENGTH_PAGES_WEIGHT / 2
-    page_max = LENGTH_PAGES_WEIGHT / 2
-
-    # calculate alignment score based on the standard deviation of line indents
-    alignment_score = max(0, alignment_max - (np.std(line_indents) * 0.25)) if line_indents else 0
-
-    # calculate page_score based on how many pages are missing with a maximum limit
-    difference = num_pages - target_pages
-    
-    if difference < 0:
-        page_score = max(0, page_max - (abs(difference) * 0.5))
-    else:
-        # No punishment for writing more
-        page_score = page_max
-    
-    return round(alignment_score + page_score, 2)
-
-
-# set up script
-
-# get Files
-base_dir = os.path.dirname(os.path.abspath(__file__))
-project_root = os.path.dirname(base_dir)
-
-folder = os.path.join(project_root, 'casestudy_1')
-entries = os.listdir(folder)
-print("All Files: ", entries)
-full_paths = [os.path.join(folder, entry) for entry in entries if entry.endswith('.pdf')]
-
-# set up Language Tool
+# initialize grammar tool and folder path
 tool = llp.LanguageTool('en-US')
-
-# Mark Storage per File
+folder_path = '../casestudy_1'
 export_data = []
 
-for i in full_paths:
-    print('Grading: ', i)
-    total_score = 0.0
-    
-    # Default rubric to handle failures gracefully
-    rubric = {
-        "Sentence Uniformity": 0.0,
-        "Clear Purpose": 0.0,
-        "Spelling and Grammar": 0.0,
-        "Length / Pages": 0.0
-    }
+if os.path.exists(folder_path):
+    # get list of all documents in the folder
+    files = [f for f in os.listdir(folder_path) if f.endswith(('.pdf', '.docx'))]
+    for file_name in files:
+        print(f"grading file: {file_name}")
+        full_path = os.path.join(folder_path, file_name)
+        content = extract_text(full_path)
+        
+        # find the group number within the filename
+        group_match = re.search(r'\d+', file_name)
+        group_id = group_match.group() if group_match else None
+        
+        # calculate all individual rubric scores
+        s_uni = calculate_uniformity(content)
+        s_pur = calculate_purpose(content)
+        s_gra = calculate_grammar(content, tool)
+        s_len = min(LENGTH_PAGES_WEIGHT, (len(content.split()) / 1000) * LENGTH_PAGES_WEIGHT)
+        total = math.ceil(s_uni + s_pur + s_gra + s_len)
+        
+        # pull matching info from the json data
+        info = group_data.get(str(group_id), {"topic": "Unknown", "students": []})
+        
+        # create a separate entry for every student in the group
+        for student in info.get("students", []):
+            export_data.append({
+                "Student Name": student,
+                "Group ID": int(group_id) if group_id else 0,
+                "Topic": info.get("topic", "N/A"),
+                "Sentence Uniformity": s_uni,
+                "Clear Purpose": s_pur,
+                "Grammar & Spelling": s_gra,
+                "Length & Format": round(s_len, 2),
+                "Total Score / 15": total
+            })
 
-    try:
-        # Open file to read as PDF
-        reader = PyPDF2.PdfReader(i)
-        num_pages = len(reader.pages)
-        full_text = []
-
-        # Logic to skip the first 2 pages (Cover/TOC) and the last page (Bibliography)
-        if num_pages > 3:
-            content_pages = reader.pages[2:-1]
-        else:
-            content_pages = reader.pages
-
-        for page in content_pages:
-            content_extracted = page.extract_text()
-            if content_extracted:
-                full_text.append(content_extracted)
-            
-        content = "\n".join(full_text)
-
-        if content.strip():
-            rubric["Sentence Uniformity"] = calculate_uniformity(content)
-            rubric["Clear Purpose"] = calculate_purpose(content)
-            rubric["Spelling and Grammar"] = calculate_grammar(content)
-            rubric["Length / Pages"] = calculate_pages_alignment(reader)
-        else:
-            rubric["Length / Pages"] = calculate_pages_alignment(reader)
-
-        total_score = math.ceil(sum(rubric.values()))
-        print(f"Rubric for {os.path.basename(i)}: {rubric}")
-
-    except Exception as e:
-        print(f"Critical error on {i}: {e}")
-        total_score = 0.0
-
-    # Add to export list
-    export_data.append({
-        "File Name": os.path.basename(i),
-        "Sentence Uniformity": rubric["Sentence Uniformity"],
-        "Clear Purpose": rubric["Clear Purpose"],
-        "Spelling and Grammar": rubric["Spelling and Grammar"],
-        "Length / Pages": rubric["Length / Pages"],
-        "Total Score / 15": total_score
-    })
-    print("total Score", total_score)
-
-# Export to Excel
-df = pd.DataFrame(export_data)
-df.to_excel(folder+".xlsx", index=False)
-
-print("\nExport Complete: "+folder+".xlsx")
+    # sort the data by group id and save to excel
+    df = pd.DataFrame(export_data)
+    df = df.sort_values(by=["Group ID", "Student Name"])
+    output_name = folder_path + "_individual_grades.xlsx"
+    df.to_excel(output_name, index=False)
+    print(f"done individual grades saved to {output_name}")
+else:
+    print("Folder Not Found")

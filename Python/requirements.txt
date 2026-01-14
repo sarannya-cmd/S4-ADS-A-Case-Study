@@ -4,3 +4,4 @@ PyPDF2
 openpyxl
 pandas
 numpy
+python-docx
