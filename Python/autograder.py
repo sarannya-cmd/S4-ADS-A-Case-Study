@@ -54,7 +54,7 @@ def extract_text(file_path):
     try:
         if ext == ".pdf":
             reader = PyPDF2.PdfReader(file_path)
-            pages = reader.pages[1:-1] if len(reader.pages) > 2 else reader.pages
+            pages = reader.pages[5:-1] if len(reader.pages) > 5 else reader.pages
             text = "\n".join([p.extract_text() for p in pages if p.extract_text()])
         elif ext == ".docx":
             doc = docx.Document(file_path)
