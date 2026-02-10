@@ -1,46 +1,50 @@
 {
     "1": {
         "topic": "AI-Driven Hiring & Resume Screening (Employment)",
-        "students": ["Parvathi", "Minha", "Niyathi", "Paulbin", "Antone"]
+        "students": ["AASHIL REJI", "ABHINAV KRISHNA", "ABIN BIJU", "ABIN SAJI", "ABINAND C V"]
     },
     "2": {
         "topic": "Facebook and cambridge scam 2018",
-        "students": ["Robinson", "Devadarsh", "James", "Jose", "Johan"]
+        "students": ["AKARSH PREM", "AKASH WILSON", "AKSHAY K P", "ALANTA JOSE", "ALANTA MARIYA BABU"]
     },
     "3": {
         "topic": "data privacy in ai powered surveillance systems",
-        "students": ["Adith K", "Abel Mathew", "Aswin Asok KV", "Sanju Santy", "Sreerag NP", "Thomas Pd"]
+        "students": ["ALEX SHAJU", "ALLEN SAJI", "ANAMIKA SHIMJITH", "ANAND. P", "ANJELO BINO THOMAS"]
     },
     "4": {
         "topic": "Amazon AI Recruitment Tool - Bias and Ethics Issue",
-        "students": ["Ashith V", "Amarnath", "Muhammed Fahique", "Manav", "Sreedeep"]
+        "students": ["ANN MARIYA SAM", "ANNLIA JISHA RAJEEV", "ARSHID.K.P", "ARYA KRISHNAN KK", "ATUL VINCENT"]
     },
     "5": {
         "topic": "Clearview AI Facial Recognition & Scraping People's Photos",
-        "students": ["Shanil VK", "Devika Sreejith", "Rasha", "Anamika Mukundan", "Abhiram KV"]
+        "students": ["AYAN HASHIQUE COTTICOLLEN", "AYSHA ABDUL KHADER", "CHANDANA O T", "DENZ JOSEPH", "DEVANANDHA PRATHEESH"]
     },
     "6": {
         "topic": "Aadhaar Data Privacy Issue",
-        "students": ["Anshwaramol p", "Roshnitha", "Anamika Vijayan", "Vismaya", "Rosmy Reji"]
+        "students": ["DEVAPRIYA C", "DEVIKA S", "DEVIKA.A", "DHYAN MARTIN", "DIYA DINACHANDRAN"]
     },
     "7": {
         "topic": "Privacy and Data Security Issues in Cloud-Based Data Storage Systems",
-        "students": ["Anet", "Anna", "Akhila Saju", "sedna", "Thanmaya"]
+        "students": ["DON JOE BIJU", "EMIL SEBASTIAN", "FLAVIA DARY JOSEPH", "HARIRAJ K", "JAMILIN GEORGE OLICKAL"]
     },
     "8": {
         "topic": "Google Location Data Retention Issue",
-        "students": ["Felix", "Louis", "Richu", "Allen", "Nimay"]
+        "students": ["JEON MU", "JISTO JOSE", "JOEL MATHEW SAJI", "MAYUG B", "MIDHUNA K"]
     },
     "9": {
         "topic": "Pegasus spyware and whatsapp privacy breach",
-        "students": ["Abinav", "Dhanush", "Arsha", "Pallavi Biju", "Manaswi"]
+        "students": ["MITHRAVINDA U", "MUHAMMED NASIF CP", "MUZEEN K", "NAVALRAG V P", "NIVED SUNIL"]
     },
     "10": {
         "topic": "United arab emirates:etisalat customer data exposure under uae pdpl",
-        "students": ["Shebin", "Sabin", "Shaz", "Don", "Afreedh"]
+        "students": ["P S AADHISH", "PRAJWAL PRATHEEV", "SANHA SADIK", "SANJAY SATHEESH", "SANVI PRAVEEN"]
     },
     "11": {
         "topic": "UK: British Airways data breach and GDPR enforcement",
-        "students": ["Alex", "Adith", "Jithin", "Jishnu", "Saniya"]
+        "students": ["SHALBIN PETER", "SHRIYA SREEJESH", "SREEHARI RAJEESH. K", "SREELAKSHMI.S", "SREENANDA RAJU"]
+    },
+    "12": {
+        "topic": "Deepfakes and the Ethics of AI-Generated Content",
+        "students": ["SREYA K", "TESSA MARIYA", "THEERTHA REETHESH NAMBIAR", "VAIDOORIYA CH", "VISHAAL B THOMAS", "VISMAYA.M"]
     }
 }
