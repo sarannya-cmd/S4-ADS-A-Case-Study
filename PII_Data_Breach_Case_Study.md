@@ -1,11 +1,14 @@
-# Case Study: Data Breach and Loss of Personally Identifiable Information (PII)
+# DATA BREACH AND LOSS OF PERSONALLY IDENTIFIABLE INFORMATION (PII)
 
-## 1. Title Page
-**Title:** Data Breach and Loss of Personally Identifiable Information (PII)  
+## Case Study Report
+
 **Subject:** Ethics and Privacy in Data Science  
-**Student Name:** Nived Sunil  
-**Course:** B.Tech Artificial Intelligence and Data Science  
-**University:** APJ Abdul Kalam Technological University (KTU)
+
+**Submitted by:**  
+Nived Sunil  
+
+**University Register Number:**  
+VML24AD086  
 
 ---
 
